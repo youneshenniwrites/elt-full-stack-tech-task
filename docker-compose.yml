@@ -1,0 +1,78 @@
+
+x-db-creds: &db-env
+  MIKRO_ORM_HOST: database
+  MIKRO_ORM_PORT: 3306
+  MIKRO_ORM_USER: root
+  MIKRO_ORM_PASSWORD: ""
+  MIKRO_ORM_DB_NAME: techtest
+
+services:
+  database:
+    image: mysql:8.0.32
+    container_name: database
+    working_dir: /project
+    environment:
+      MYSQL_DATABASE: techtest
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+    ports:
+      - '3310:3306'
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=1073741824
+    restart: always
+    networks:
+      - docker_network
+
+  calendar-backend:
+    container_name: calendar-backend
+    image: node:20-alpine
+    ports:
+      - '3344:3344'
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+    environment:
+      <<: *db-env
+      PORT: 3344
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        npx nx run calendar-backend:serve --verbose --skip-nx-cache
+      "
+    networks:
+      - docker_network
+
+  calendar-frontend:
+    container_name: calendar-frontend
+    image: node:20-alpine
+    ports:
+      - '4200:4200'
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        npx nx run calendar-frontend:serve --verbose --skip-nx-cache
+      "
+    networks:
+      - docker_network
+
+  setup-db:
+    container_name: setup-db
+    image: node:20-alpine
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+    environment:
+      <<: *db-env
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        npx nx run calendar-domain:schema-recreate
+      "
+    networks:
+      - docker_network
+    depends_on:
+      - database
+
+networks:
+  docker_network:

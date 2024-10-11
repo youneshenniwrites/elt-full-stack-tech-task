@@ -1,0 +1,8 @@
+$event-bg: #6d1b98;
+$event-border: #4e136d;
+$event-outline: lighten($event-bg, 10%);
+
+$today-highlight-bg: #f8f4ff;
+
+@import '../../../../../../../../node_modules/react-big-calendar/lib/sass/styles';
+@import '../../../../../../../../node_modules/react-big-calendar/lib/addons/dragAndDrop/styles.css';

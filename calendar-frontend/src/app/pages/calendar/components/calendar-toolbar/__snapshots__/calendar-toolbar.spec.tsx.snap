@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CalendarToolbarComponent renders correctly 1`] = `
+<div>
+  <div
+    css="[object Object]"
+  >
+    <button
+      data-testid="add-event-btn"
+    >
+      Add event
+    </button>
+    <button
+      data-testid="edit-event-btn"
+      disabled=""
+    >
+      Edit event
+    </button>
+    <label
+      for="show-ids-checkbox"
+    >
+      <input
+        id="show-ids-checkbox"
+        type="checkbox"
+      />
+      Show ids
+    </label>
+  </div>
+</div>
+`;
