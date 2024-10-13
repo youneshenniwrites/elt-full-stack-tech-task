@@ -13,6 +13,14 @@
         "cwd": "calendar-domain",
         "parallel": false
       }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["tsc -b tsconfig.lib.json --incremental", "tsc -b tsconfig.spec.json --incremental"],
+        "cwd": "calendar-domain",
+        "parallel": false
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
 describe('CalendarToolbarComponent', () => {
-  let addEvent: (event: EltEvent) => Promise<void>;
+  let addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   let setShowIds: Dispatch<boolean>;
   const mockEvent: EltEvent = {
     id: 100,
