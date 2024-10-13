@@ -6,7 +6,7 @@ import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
 import { useMemo } from 'react';
 const localizer = momentLocalizer(moment);
-const DnDCalendar = withDragAndDrop(Calendar);
+const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
 
 interface ICalendarViewProps {
   onNavigate: (date: Date, view: View) => void;
