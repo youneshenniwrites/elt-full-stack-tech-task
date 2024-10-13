@@ -23,36 +23,35 @@ services:
 
   calendar-backend:
     container_name: calendar-backend
-    image: node:20-alpine
+    image: nx-cli-local
     ports:
       - '3344:3344'
     working_dir: /home/node/app
     volumes:
       - .:/home/node/app
+      # Exclude node modules and nx cache
+      - /home/node/app/node_modules
+      - /home/node/app/.nx
     environment:
       <<: *db-env
       PORT: 3344
-    entrypoint: /bin/sh -c
-    command: >
-      "
-        npx nx run calendar-backend:serve --verbose --skip-nx-cache
-      "
+      PROJECT_NAME: calendar-backend
     networks:
       - docker_network
 
   calendar-frontend:
     container_name: calendar-frontend
-    image: node:20-alpine
+    image: nx-cli-local
     ports:
       - '4200:4200'
     working_dir: /home/node/app
     volumes:
       - .:/home/node/app
-    entrypoint: /bin/sh -c
-    command: >
-      "
-        npx nx run calendar-frontend:serve --verbose --skip-nx-cache
-      "
+      # Exclude node modules and nx cache
+      - /home/node/app/node_modules
+      - /home/node/app/.nx
+    environment:
+      PROJECT_NAME: calendar-frontend
     networks:
       - docker_network
 

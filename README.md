@@ -63,11 +63,18 @@ Install dependencies (use -f as it has some arch-specific libs for MacOS/Docker 
 npm install -f
 ```
 
-There is a docker-compose file which start a MySQL database, backend and frontend projects. You can start them up using `docker compose up -d`.
+There is a docker-compose file which start a MySQL database, backend and frontend projects. You'd first need to build a base Docker image by running
+```
+docker buildx build --platform linux/arm64 . --tag nx-cli-local
+```
+Note: Change `arm64` to `amd64` if you are not on MacOS.
+
+
+You can then start all the projects up using `docker compose up -d`.
 
 If you experience issues with Docker, try running `nx reset`.
 
-If you are on a Mac, then you might need to run `npm rebuild --arch=arm64 --platform=linux` as well before starting backend/frontend projects in Docker.
+If you are on a Mac and experiencing issues, then you might need to run `npm rebuild --arch=arm64 --platform=linux` as well before starting backend/frontend projects in Docker.
 
 Worst case scenario, you can run the backend and the frontend outside of Docker. You might need to create `.env.local` files with environment variables which are currently configured in `docker-compose.yml`.
 
