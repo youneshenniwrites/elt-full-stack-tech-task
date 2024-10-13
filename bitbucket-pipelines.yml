@@ -14,8 +14,9 @@ pipelines:
             - node
       - parallel:
         - step:
-            name: 'Lint'
+            name: 'Lint & Type Check'
             script:
+              - npx nx run-many --target=type-check --all
               - npx nx run-many --target=lint --all
             caches:
               - node
@@ -42,8 +43,9 @@ pipelines:
             - node
       - parallel:
           - step:
-              name: 'Lint'
+              name: 'Lint & Type Check'
               script:
+                - npx nx run-many --target=type-check --all
                 - npx nx run-many --target=lint --all
               caches:
                 - node

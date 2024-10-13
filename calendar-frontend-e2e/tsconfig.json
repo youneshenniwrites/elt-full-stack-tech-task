@@ -4,7 +4,7 @@
     "allowJs": true,
     "outDir": "../dist/out-tsc",
     "module": "commonjs",
-    "types": ["cypress", "node", "@4tw/cypress-drag-drop"],
+    "types": ["cypress", "node"],
     "sourceMap": false
   },
   "include": [

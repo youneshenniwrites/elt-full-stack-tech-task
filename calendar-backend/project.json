@@ -22,6 +22,14 @@
           "buildTarget": "calendar-backend:build:production"
         }
       }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["tsc -b tsconfig.app.json --incremental", "tsc -b tsconfig.spec.json --incremental"],
+        "cwd": "calendar-backend",
+        "parallel": false
+      }
     }
   }
 }
