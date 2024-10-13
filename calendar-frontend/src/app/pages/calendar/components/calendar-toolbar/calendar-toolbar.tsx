@@ -5,7 +5,7 @@ import { random } from 'lodash';
 import { Dispatch } from 'react';
 
 interface ICalendarToolbarProps {
-  addEvent: (event: EltEvent) => Promise<void>;
+  addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   showIds: boolean;
   setShowIds: Dispatch<boolean>;
   selectedEvent?: EltEvent;

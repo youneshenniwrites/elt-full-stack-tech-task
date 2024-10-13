@@ -35,11 +35,11 @@ export const useCalendar = () => {
     );
   };
 
-  const addEvent = async (event: EltEvent) => {
+  const addEvent = async (event: Omit<EltEvent, 'id'>) => {
     const {
       data: { id },
     } = await calendarService.createEvent(
-      event.title as string,
+      event.title,
       moment(event.start),
       moment(event.end),
     );
