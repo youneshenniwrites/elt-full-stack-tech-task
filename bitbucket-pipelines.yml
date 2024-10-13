@@ -7,36 +7,55 @@ pipelines:
   pull-requests:
     '**':
       - step:
-          name: 'Build and test affected apps on Pull Requests'
+          name: 'Install'
           script:
-            - export NX_BRANCH=$BITBUCKET_PR_ID
-
-            # This enables task distribution via Nx Cloud
-            # Run this command as early as possible, before dependencies are installed
-            # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
-            - npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
-
-            - npm ci --legacy-peer-deps
-
-            # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-            # npx nx-cloud record -- echo Hello World
-            # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-            - npx nx affected --base=origin/main -t lint test build
+            - npm ci -f
+          caches:
+            - node
+      - parallel:
+        - step:
+            name: 'Lint'
+            script:
+              - npx nx run-many --target=lint --all
+            caches:
+              - node
+        - step:
+            name: 'Build'
+            script:
+              - npx nx run-many --target=build --all
+            caches:
+              - node
+        - step:
+            name: 'Test'
+            script:
+              - npx nx run-many --target=test -projects=calendar-backend,calendar-frontend,calendar-domain --all
+            caches:
+              - node
 
   branches:
-    main:
+    master:
       - step:
-          name: 'Build and test affected apps on "main" branch changes'
+          name: 'Install'
           script:
-            - export NX_BRANCH=$BITBUCKET_BRANCH
-            # This enables task distribution via Nx Cloud
-            # Run this command as early as possible, before dependencies are installed
-            # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
-            - npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
-
-            - npm ci --legacy-peer-deps
-
-            # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-            # - npx nx-cloud record -- echo Hello World
-            # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-            - npx nx affected -t lint test build --base=HEAD~1
+            - npm ci -f
+          caches:
+            - node
+      - parallel:
+          - step:
+              name: 'Lint'
+              script:
+                - npx nx run-many --target=lint --all
+              caches:
+                - node
+          - step:
+              name: 'Build'
+              script:
+                - npx nx run-many --target=build --all
+              caches:
+                - node
+          - step:
+              name: 'Test'
+              script:
+                - npx nx run-many --target=test -projects=calendar-backend,calendar-frontend,calendar-domain --all
+              caches:
+                - node

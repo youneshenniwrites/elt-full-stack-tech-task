@@ -1,3 +1,9 @@
+if (!process.env.CI) {
+  console.log('Loaded local env');
+
+  process.env.TZ = 'UTC';
+}
+
 export default {
   displayName: 'calendar-frontend',
   preset: '../jest.preset.js',

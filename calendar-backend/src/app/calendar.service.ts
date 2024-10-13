@@ -10,7 +10,10 @@ export class CalendarService {
   async getEvents(start: string, end: string) {
     if (!start || !end) throw new BadRequestException('No start/end specified');
 
-    return this.calendarEventRepository.findForRange(start, end);
+    return this.calendarEventRepository.findForRange(
+      new Date(start),
+      new Date(end),
+    );
   }
 
   async addEvent(payload: EventPayload) {
