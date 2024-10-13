@@ -22,7 +22,7 @@ describe('CalendarService', () => {
       await expect(service.getEvents(start, end)).resolves.toEqual([
         mockCalendarEventEntity,
       ]);
-      expect(findForRange).toHaveBeenCalledWith(start, end);
+      expect(findForRange).toHaveBeenCalledWith(new Date(start), new Date(end));
     });
   });
 

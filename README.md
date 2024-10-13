@@ -56,6 +56,8 @@ Below is a list of tasks which need to be completed. You are allowed to use any 
 #
 ## Running the project
 
+Ensure you are running **Node v20+**.
+
 Install dependencies (use -f as it has some arch-specific libs for MacOS/Docker compatibility)
 ```sh
 npm install -f

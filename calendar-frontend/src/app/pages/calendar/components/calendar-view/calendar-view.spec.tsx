@@ -17,7 +17,7 @@ describe('CalendarView', () => {
   beforeEach(() => {
     onNavigate = jest.fn();
     setSelectedEvent = jest.fn();
-    jest.useFakeTimers().setSystemTime(new Date('2024-10-11T10:30:00'));
+    jest.useFakeTimers().setSystemTime(new Date('2024-10-11T10:30:00Z'));
   });
 
   afterEach(() => {
@@ -53,7 +53,7 @@ describe('CalendarView', () => {
     const event = eventLabel.closest('.rbc-event') as HTMLElement;
     const eventTime = event?.querySelector('.rbc-event-label');
 
-    expect(eventTime).toHaveTextContent('13:15 - 13:45');
+    expect(eventTime).toHaveTextContent('12:15 - 12:45');
     expect(within(event).queryByText('id: 100')).not.toBeInTheDocument();
   });
 

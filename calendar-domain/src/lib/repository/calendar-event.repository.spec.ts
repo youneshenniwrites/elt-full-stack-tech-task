@@ -1,8 +1,9 @@
 import { LoadStrategy, MikroORM, wrap } from '@mikro-orm/core';
 import { entities } from '../entities';
-import { EntityManager, MySqlDriver } from '@mikro-orm/mysql';
+import { EntityManager } from '@mikro-orm/mysql';
 import { CalendarEventEntity } from '../entity/calendar-event.entity';
 import { CalendarEventRepository } from './calendar-event.repository';
+import { SqliteDriver } from '@mikro-orm/sqlite';
 
 describe('CalendarEventRepository', () => {
   let orm: MikroORM;
@@ -12,7 +13,7 @@ describe('CalendarEventRepository', () => {
 
   beforeAll(async () => {
     process.env.MIKRO_ORM_DB_NAME = 'test';
-    const orm = await MikroORM.init<MySqlDriver>({
+    const orm = await MikroORM.init<SqliteDriver>({
       type: 'sqlite',
       dbName: ':memory:',
       entities,
@@ -25,7 +26,7 @@ describe('CalendarEventRepository', () => {
   });
 
   afterAll(async () => {
-    await orm.close(true);
+    await orm?.close(true);
     jest.useRealTimers();
   });
 

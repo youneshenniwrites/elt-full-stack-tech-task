@@ -2116,9 +2116,9 @@ exports[`CalendarView should render a calendar with an event 1`] = `
               <div
                 class="rbc-event"
                 role="button"
-                style="top: 55.208333333333336%; height: 2.0833333333333286%; width: 100%; left: 0%;"
+                style="top: 51.041666666666664%; height: 2.0833333333333357%; width: 100%; left: 0%;"
                 tabindex="0"
-                title="13:15 - 13:45: Mock event"
+                title="12:15 - 12:45: Mock event"
               >
                 <div
                   class="rbc-addons-dnd-resizable"
@@ -2133,7 +2133,7 @@ exports[`CalendarView should render a calendar with an event 1`] = `
                   <div
                     class="rbc-event-label"
                   >
-                    13:15 - 13:45
+                    12:15 - 12:45
                   </div>
                   <div
                     class="rbc-event-content"
