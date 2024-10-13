@@ -1,10 +1,10 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
-import { getRepositoryToken, MikroOrmModule } from '@mikro-orm/nestjs';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { EntityManager } from '@mikro-orm/mysql';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { entities } from './entities';
 import { CalendarEventEntity } from './entity/calendar-event.entity';
-import { CalendarEventRepository } from '@fs-tech-test/calendar-domain';
+import { CalendarEventRepository } from './repository/calendar-event.repository';
 
 @Global()
 @Module({})

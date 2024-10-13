@@ -1,3 +1,8 @@
+// Module
+export * from './lib/calendar-domain.module';
+
+// Entities
 export * from './lib/entities';
 
-export * from './lib/repository/calendar-event.repository'
+// Repositories
+export * from './lib/repository/calendar-event.repository';

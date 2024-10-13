@@ -1,11 +1,13 @@
 import { LoadStrategy, MikroORM, wrap } from '@mikro-orm/core';
-import { entities } from '@fs-tech-test/calendar-domain';
+import { entities } from '../entities';
 import { EntityManager, MySqlDriver } from '@mikro-orm/mysql';
 import { CalendarEventEntity } from '../entity/calendar-event.entity';
+import { CalendarEventRepository } from './calendar-event.repository';
 
 describe('CalendarEventRepository', () => {
   let orm: MikroORM;
   let em: EntityManager;
+  let repository: CalendarEventRepository;
   const now = new Date('2024-10-01T13:33:00Z');
 
   beforeAll(async () => {
@@ -18,7 +20,8 @@ describe('CalendarEventRepository', () => {
     });
     await orm.getSchemaGenerator().refreshDatabase();
     em = orm.em.fork();
-    jest.useFakeTimers().setSystemTime(now);
+    repository = new CalendarEventRepository(em, CalendarEventEntity);
+    jest.useFakeTimers({ doNotFake: ['nextTick'] }).setSystemTime(now);
   });
 
   afterAll(async () => {
@@ -29,13 +32,19 @@ describe('CalendarEventRepository', () => {
   describe('CalendarEventEntity', () => {
     it('can be persisted, deleted and fetched', async () => {
       // Create
-      const eventData = {name: 'test event', start: new Date('2024-11-14T10:00:00'), end: new Date('2024-11-14T11:00:00')};
+      const eventData = {
+        name: 'test event',
+        start: new Date('2024-11-14T10:00:00'),
+        end: new Date('2024-11-14T11:00:00'),
+      };
       const entity = em.create(CalendarEventEntity, eventData);
       await em.persistAndFlush(entity);
 
       // Fetch
       const result = await em.find(CalendarEventEntity, {});
-      expect(result.map(r => wrap(r).toObject())).toEqual([{...eventData, id: 1, createdAt: now}]);
+      expect(result.map((r) => wrap(r).toObject())).toEqual([
+        { ...eventData, id: 1, createdAt: now },
+      ]);
 
       // Remove
       em.remove(result[0]);
@@ -44,21 +53,83 @@ describe('CalendarEventRepository', () => {
     });
   });
 
-  describe('findForRange', () => {
-    it.skip('should find events for a date range', async () => {
+  describe('Repository methods', () => {
+    beforeEach(async () => {
+      const entity1 = em.create(CalendarEventEntity, {
+        name: 'test event',
+        start: new Date('2024-11-14T10:00:00'),
+        end: new Date('2024-11-14T11:00:00'),
+      });
 
+      const entity2 = em.create(CalendarEventEntity, {
+        name: 'other test event',
+        start: new Date('2024-11-15T16:00:00'),
+        end: new Date('2024-11-15T17:00:00'),
+      });
+      await em.persistAndFlush([entity1, entity2]);
     });
-  });
 
-  describe('createNewEvent', () => {
-    it.skip('should create a new event', async () => {
+    describe('findForRange', () => {
+      it('should find events for a date range', async () => {
+        const result = await repository.findForRange(
+          new Date('2024-11-14T00:00:00'),
+          new Date('2024-11-16T00:00:00'),
+        );
 
+        expect(result.map((e) => wrap(e).toObject())).toEqual([
+          {
+            id: expect.any(Number),
+            createdAt: now,
+            name: 'test event',
+            start: new Date('2024-11-14T10:00:00'),
+            end: new Date('2024-11-14T11:00:00'),
+          },
+          {
+            id: expect.any(Number),
+            createdAt: now,
+            name: 'other test event',
+            start: new Date('2024-11-15T16:00:00'),
+            end: new Date('2024-11-15T17:00:00'),
+          },
+        ]);
+      });
     });
-  });
 
-  describe('deleteById', () => {
-    it.skip('should delete by id', async () => {
+    describe('createNewEvent', () => {
+      it('should create a new event', async () => {
+        await repository.createNewEvent(
+          'new event',
+          new Date('2025-01-14T10:00:00'),
+          new Date('2025-01-14T11:00:00'),
+        );
 
+        const result = await em.find(CalendarEventEntity, {
+          name: 'new event',
+        });
+
+        expect(result.map((e) => wrap(e).toObject())).toEqual([
+          {
+            id: expect.any(Number),
+            createdAt: now,
+            name: 'new event',
+            start: new Date('2025-01-14T10:00:00'),
+            end: new Date('2025-01-14T11:00:00'),
+          },
+        ]);
+      });
+    });
+
+    describe('deleteById', () => {
+      it('should delete by id', async () => {
+        const existingEvent = (await repository.find({}))[0];
+        expect(existingEvent).toBeDefined();
+
+        await repository.deleteById(existingEvent.id);
+
+        await expect(
+          repository.find({ id: existingEvent.id }),
+        ).resolves.toEqual([]);
+      });
     });
   });
 });

@@ -11,10 +11,7 @@ export function App() {
   return (
     <StyledApp>
       <Routes>
-        <Route
-          path="/"
-          element={<CalendarPage/>}
-        />
+        <Route path="/" element={<CalendarPage />} />
       </Routes>
     </StyledApp>
   );

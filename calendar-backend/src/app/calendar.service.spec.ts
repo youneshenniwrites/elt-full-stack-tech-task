@@ -4,7 +4,8 @@ import { mockCalendarEventEntity } from '../mocks/events.mock';
 
 describe('CalendarService', () => {
   let service: CalendarService;
-  const calendarEventRepository: CalendarEventRepository = new CalendarEventRepository(null, null);
+  const calendarEventRepository: CalendarEventRepository =
+    new CalendarEventRepository(null, null);
 
   beforeAll(async () => {
     service = new CalendarService(calendarEventRepository);
@@ -12,30 +13,42 @@ describe('CalendarService', () => {
 
   describe('getEvents', () => {
     it('should return events from the database', async () => {
-      const findForRange = jest.spyOn(calendarEventRepository, 'findForRange').mockResolvedValue([mockCalendarEventEntity]);
+      const findForRange = jest
+        .spyOn(calendarEventRepository, 'findForRange')
+        .mockResolvedValue([mockCalendarEventEntity]);
 
       const start = '2024-10-08T00:00:00';
       const end = '2024-10-09T00:00:00';
-      await expect(service.getEvents(start, end)).resolves.toEqual([mockCalendarEventEntity]);
+      await expect(service.getEvents(start, end)).resolves.toEqual([
+        mockCalendarEventEntity,
+      ]);
       expect(findForRange).toHaveBeenCalledWith(start, end);
     });
   });
 
   describe('createEvent', () => {
     it('should create a new event', async () => {
-      const createNewEvent = jest.spyOn(calendarEventRepository, 'createNewEvent').mockResolvedValue(mockCalendarEventEntity);
+      const createNewEvent = jest
+        .spyOn(calendarEventRepository, 'createNewEvent')
+        .mockResolvedValue(mockCalendarEventEntity);
 
       const start = '2024-10-09T15:00:00';
       const end = '2024-10-09T17:00:00';
-      await service.addEvent({name: 'Mock event #1', start, end});
+      await service.addEvent({ name: 'Mock event #1', start, end });
 
-      expect(createNewEvent).toHaveBeenCalledWith('Mock event #1', new Date(start), new Date(end));
+      expect(createNewEvent).toHaveBeenCalledWith(
+        'Mock event #1',
+        new Date(start),
+        new Date(end),
+      );
     });
   });
 
   describe('deleteEvent', () => {
     it('should delete an event', async () => {
-      const deleteById = jest.spyOn(calendarEventRepository, 'deleteById').mockResolvedValue();
+      const deleteById = jest
+        .spyOn(calendarEventRepository, 'deleteById')
+        .mockResolvedValue();
 
       await service.deleteEvent(111);
 

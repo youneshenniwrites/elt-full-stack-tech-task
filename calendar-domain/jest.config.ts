@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'calendar-domain',
   preset: '../jest.preset.js',

@@ -1,19 +1,22 @@
 import { CalendarEventEntity } from '../entity/calendar-event.entity';
 import { EntityRepository } from '@mikro-orm/mysql';
 import { Injectable } from '@nestjs/common';
-import { QueryResult } from '@mikro-orm/core';
 
 @Injectable()
 export class CalendarEventRepository extends EntityRepository<CalendarEventEntity> {
-  async findForRange(start: string, end: string): Promise<CalendarEventEntity[]> {
+  async findForRange(start: Date, end: Date): Promise<CalendarEventEntity[]> {
     // By default, mikro-orm uses Knex query syntax but you can use raw queries like this if it's easier:
     // const rawResult = await this.em.getKnex().raw<CalendarEventEntity[][]>('select * from elt_event where start <= ? AND end >= ?', [end, start])
     // return rawResult[0];
-    return this.find({start: {$lte: end}, end: {$gte: start}});
+    return this.find({ start: { $lte: end }, end: { $gte: start } });
   }
 
-  async createNewEvent(name: string, start: Date, end: Date): Promise<CalendarEventEntity> {
-    const newEntity = this.create({name, start, end});
+  async createNewEvent(
+    name: string,
+    start: Date,
+    end: Date,
+  ): Promise<CalendarEventEntity> {
+    const newEntity = this.create({ name, start, end });
     await this.persistAndFlush(newEntity);
 
     return newEntity;

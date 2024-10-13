@@ -11,13 +11,13 @@ describe('Calendar page', () => {
 
   // this doesn't work
   it.skip('should be able to drag and drop an event', () => {
-    cy.get('.rbc-event').first().scrollIntoView().click().trigger('dragstart');
+    cy.get('.rbc-event').first().scrollIntoView();
+    cy.click();
+    cy.trigger('dragstart');
 
-    cy.get('.rbc-time-slot').eq(365)
-      .trigger('dragenter', { force: true})
-      .trigger('dragover', { force: true })
-      .trigger('drop', { force: true })
-      .wait(50)
-      .trigger('dragend', { force: true });
+    cy.get('.rbc-time-slot').eq(365).trigger('dragenter', { force: true });
+    cy.trigger('dragover', { force: true });
+    cy.trigger('drop', { force: true });
+    cy.trigger('dragend', { force: true });
   });
 });

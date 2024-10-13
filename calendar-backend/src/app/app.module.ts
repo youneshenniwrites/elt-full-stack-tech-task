@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 
 import { CalendarController } from './calendar.controller';
 import { CalendarService } from './calendar.service';
-import { CalendarDomainModule } from '../../../calendar-domain/src/lib/calendar-domain.module';
+import { CalendarDomainModule } from '@fs-tech-test/calendar-domain';
 
 @Module({
-  imports: [
-    CalendarDomainModule.register(),
-  ],
+  imports: [CalendarDomainModule.register()],
   controllers: [CalendarController],
   providers: [CalendarService],
 })

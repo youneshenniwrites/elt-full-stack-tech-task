@@ -3,7 +3,9 @@ import { CalendarEventRepository } from '@fs-tech-test/calendar-domain';
 
 @Injectable()
 export class CalendarService {
-  constructor(private readonly calendarEventRepository: CalendarEventRepository) {}
+  constructor(
+    private readonly calendarEventRepository: CalendarEventRepository,
+  ) {}
 
   async getEvents(start: string, end: string) {
     if (!start || !end) throw new BadRequestException('No start/end specified');
@@ -12,7 +14,11 @@ export class CalendarService {
   }
 
   async addEvent(payload: EventPayload) {
-    const newEntity = await this.calendarEventRepository.createNewEvent(payload.name, new Date(payload.start), new Date(payload.end));
+    const newEntity = await this.calendarEventRepository.createNewEvent(
+      payload.name,
+      new Date(payload.start),
+      new Date(payload.end),
+    );
 
     return newEntity.id;
   }

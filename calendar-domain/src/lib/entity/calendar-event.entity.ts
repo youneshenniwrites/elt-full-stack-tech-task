@@ -4,7 +4,7 @@ import { CalendarEventRepository } from '../repository/calendar-event.repository
 
 @Entity({
   tableName: 'elt_event',
-  customRepository: () => CalendarEventRepository
+  customRepository: () => CalendarEventRepository,
 })
 export class CalendarEventEntity extends BaseEntity {
   [EntityRepositoryType]?: CalendarEventRepository;
@@ -16,5 +16,5 @@ export class CalendarEventEntity extends BaseEntity {
   start: Date;
 
   @Property({ fieldName: 'end' })
-  end?: Date;
+  end: Date;
 }

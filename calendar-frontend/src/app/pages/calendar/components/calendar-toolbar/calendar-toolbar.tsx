@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { EltEvent } from '../../../../common/types';
 import moment from 'moment';
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { Dispatch } from 'react';
 
 interface ICalendarToolbarProps {
@@ -15,7 +15,7 @@ export const CalendarToolbar = ({
   addEvent,
   showIds,
   setShowIds,
-  selectedEvent
+  selectedEvent,
 }: ICalendarToolbarProps) => {
   const createRandomEvent = async () => {
     // Start in the next 48h
@@ -29,12 +29,20 @@ export const CalendarToolbar = ({
 
   const editEvent = (event?: EltEvent) => {
     console.log('todo');
-  }
+  };
 
   return (
     <div css={ToolbarStyle}>
-      <button data-testid='add-event-btn' onClick={createRandomEvent}>Add event</button>
-      <button data-testid='edit-event-btn' onClick={() => editEvent(selectedEvent)} disabled={!selectedEvent}>Edit event</button>
+      <button data-testid="add-event-btn" onClick={createRandomEvent}>
+        Add event
+      </button>
+      <button
+        data-testid="edit-event-btn"
+        onClick={() => editEvent(selectedEvent)}
+        disabled={!selectedEvent}
+      >
+        Edit event
+      </button>
       <label htmlFor="show-ids-checkbox">
         <input
           id="show-ids-checkbox"
