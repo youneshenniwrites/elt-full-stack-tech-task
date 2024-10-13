@@ -4,7 +4,7 @@ import moment from 'moment';
 import './styles/calendar.scss';
 import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
-import { useMemo } from 'react';
+import { useCalendarView } from '../../hooks/use-calendar-view';
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
 
@@ -15,27 +15,13 @@ interface ICalendarViewProps {
   setSelectedEvent: (event: EltEvent) => void;
 }
 
-const getCustomCalendarEventComponent =
-  ({ showIds }: { showIds: boolean }) =>
-  ({ event }: { event: EltEvent }) => {
-    return (
-      <span>
-        <strong>{event.title}</strong>
-        {showIds && <div>id: {event.id}</div>}
-      </span>
-    );
-  };
-
 export const CalendarView = ({
   onNavigate,
   events,
   showIds,
   setSelectedEvent,
 }: ICalendarViewProps) => {
-  const components = useMemo(
-    () => ({ event: getCustomCalendarEventComponent({ showIds }) }),
-    [showIds],
-  );
+  const { components } = useCalendarView(showIds);
 
   const onEventDrop = () => console.log('todo');
   const onEventResize = () => console.log('todo');
