@@ -27,21 +27,21 @@ Below is a list of tasks which need to be completed. You are allowed to use any 
 
 #### 1. Implement drag-and-drop
   
-  There is already a drag-and-drop functionality in the calendar but nothing happens on drop. You would need to create a necessary API endpoint on the backend and make a request to it from the frontend so that the changes requested by a drag-and-drop are persisted.
+  There is already a drag-and-drop functionality in the calendar but nothing happens on drop. You would need to create a necessary API endpoint on the backend and make a request to it from the frontend so that the changes requested by the drag-and-drop are persisted.
 #### 2. Implement event resize
 
-  There is already an event resize functionality in the calendar but same as DnD it's not implemented on the backend. Fix it so the changes are persisted.
+  There is already an event resize functionality in the calendar but same as DnD it's not implemented on the backend. You will need to fix it so the changes are persisted.
 #### 3. Add event modal with a form which takes name, start and end times for an event to be created
   
-  Currently, the Add button just creates a random event. Instead, it needs to prompt user to input the details of the event they want to create.
+  Currently, the Add button just creates a random event. Instead, it needs to prompt the user to input the details of the event they want to create.
 
 #### 4. Edit event modal
 
-  Currently, there is an Edit button on the screen but it does nothing. Edit button should allow the user to edit the name, start or end time of an existing event.
+  Currently, there is an Edit button on the screen but it does nothing. Edit button should allow the user to edit the name, start and/or end time of an existing event.
 
 #### 5. Add backend validation to event create/edit APIs
 
-  If user tries to create/edit an event so that it would conflict with another event in the system, the API should return a 400 response with an error.
+  If user tries to create/edit an event so that it would conflict with another event in the system, the API should return a 400 response with an error. This should also be displayed in the web UI.
 
 #### 6. (Optional) Refactor showIds and selectedEvent params
 
@@ -67,6 +67,6 @@ If you experience issues with Docker, try running `nx reset`.
 
 If you are on a Mac, then you might need to run `npm rebuild --arch=arm64 --platform=linux` as well before starting backend/frontend projects in Docker.
 
-Worst case scenario, you can run the backend and the frontend outside of docker but you might need to create `.env.local` files with environment variables which are currently configured in `docker-compose.yml`.
+Worst case scenario, you can run the backend and the frontend outside of Docker. You might need to create `.env.local` files with environment variables which are currently configured in `docker-compose.yml`.
 
 You can navigate to the webapp by going to http://localhost:4200 in your browser.
