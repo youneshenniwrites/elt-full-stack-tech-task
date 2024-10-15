@@ -9,7 +9,7 @@ pipelines:
       - step:
           name: 'Install'
           script:
-            - npm ci -f
+            - npm ci -f --foreground-scripts
           caches:
             - node
       - parallel:
@@ -38,7 +38,7 @@ pipelines:
       - step:
           name: 'Install'
           script:
-            - npm ci -f
+            - npm ci -f --foreground-scripts
           caches:
             - node
       - parallel:
