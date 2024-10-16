@@ -58,9 +58,9 @@ Below is a list of tasks which need to be completed. You are allowed to use any 
 
 Ensure you are running **Node v20+**.
 
-Install dependencies (use -f as it has some arch-specific libs for MacOS/Docker compatibility)
+Install dependencies
 ```sh
-npm install -f
+npm install
 ```
 
 There is a docker-compose file which start a MySQL database, backend and frontend projects. You'd first need to build a base Docker image by running

@@ -41,6 +41,7 @@ export const CalendarView = ({
       resizable
       style={{ height: '80vh' }}
       popup={true}
+      dayLayoutAlgorithm={'no-overlap'}
     />
   );
 };

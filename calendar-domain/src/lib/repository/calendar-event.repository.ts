@@ -17,7 +17,7 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
     end: Date,
   ): Promise<CalendarEventEntity> {
     const newEntity = this.create({ name, start, end });
-    await this.persistAndFlush(newEntity);
+    await this.insert(newEntity);
 
     return newEntity;
   }

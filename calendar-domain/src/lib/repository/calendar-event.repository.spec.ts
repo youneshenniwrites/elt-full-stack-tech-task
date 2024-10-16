@@ -14,7 +14,7 @@ describe('CalendarEventRepository', () => {
   beforeAll(async () => {
     process.env.MIKRO_ORM_DB_NAME = 'test';
     const orm = await MikroORM.init<SqliteDriver>({
-      type: 'sqlite',
+      driver: SqliteDriver,
       dbName: ':memory:',
       entities,
       loadStrategy: LoadStrategy.JOINED,
@@ -112,6 +112,7 @@ describe('CalendarEventRepository', () => {
           {
             id: expect.any(Number),
             createdAt: now,
+            updatedAt: null,
             name: 'new event',
             start: new Date('2025-01-14T10:00:00'),
             end: new Date('2025-01-14T11:00:00'),

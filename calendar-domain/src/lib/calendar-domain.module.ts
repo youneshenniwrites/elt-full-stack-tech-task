@@ -1,6 +1,6 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { EntityManager } from '@mikro-orm/mysql';
+import { EntityManager, MySqlDriver } from '@mikro-orm/mysql';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { entities } from './entities';
 import { CalendarEventEntity } from './entity/calendar-event.entity';
@@ -15,7 +15,7 @@ export class CalendarDomainModule {
       imports: [
         MikroOrmModule.forRoot({
           entities,
-          type: 'mysql',
+          driver: MySqlDriver,
           debug: false,
           dbName: process.env.MIKRO_ORM_DB_NAME,
           allowGlobalContext: false,
