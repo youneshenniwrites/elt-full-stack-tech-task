@@ -57,12 +57,16 @@ services:
 
   setup-db:
     container_name: setup-db
-    image: node:20-alpine
+    image: nx-cli-local
     working_dir: /home/node/app
     volumes:
       - .:/home/node/app
+      # Exclude node modules and nx cache
+      - /home/node/app/node_modules
+      - /home/node/app/.nx
     environment:
       <<: *db-env
+      PROJECT_NAME: calendar-domain
     entrypoint: /bin/sh -c
     command: >
       "

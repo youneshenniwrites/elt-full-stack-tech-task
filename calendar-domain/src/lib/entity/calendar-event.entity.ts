@@ -4,7 +4,7 @@ import { CalendarEventRepository } from '../repository/calendar-event.repository
 
 @Entity({
   tableName: 'elt_event',
-  customRepository: () => CalendarEventRepository,
+  repository: () => CalendarEventRepository,
 })
 export class CalendarEventEntity extends BaseEntity {
   [EntityRepositoryType]?: CalendarEventRepository;
