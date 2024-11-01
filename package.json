@@ -2,7 +2,11 @@
   "name": "@fs-tech-test/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "all:lint": "npx nx run-many --target=lint --all",
+    "all:type-check": "npx nx run-many --target=type-check --all",
+    "all:test": "npx nx run-many --target=test -projects=calendar-backend,calendar-frontend,calendar-domain"
+  },
   "private": true,
   "devDependencies": {
     "@emotion/babel-plugin": "11.11.0",

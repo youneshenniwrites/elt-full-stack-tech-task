@@ -16,8 +16,8 @@ pipelines:
         - step:
             name: 'Lint & Type Check'
             script:
-              - npx nx run-many --target=type-check --all
-              - npx nx run-many --target=lint --all
+              - npm run all:type-check
+              - npm run all:lint
             caches:
               - node
         - step:
@@ -29,7 +29,7 @@ pipelines:
         - step:
             name: 'Test'
             script:
-              - npx nx run-many --target=test -projects=calendar-backend,calendar-frontend,calendar-domain --all
+              - npm run all:test
             caches:
               - node
 
@@ -45,8 +45,8 @@ pipelines:
           - step:
               name: 'Lint & Type Check'
               script:
-                - npx nx run-many --target=type-check --all
-                - npx nx run-many --target=lint --all
+                - npm run all:type-check
+                - npm run all:lint
               caches:
                 - node
           - step:
@@ -58,6 +58,6 @@ pipelines:
           - step:
               name: 'Test'
               script:
-                - npx nx run-many --target=test -projects=calendar-backend,calendar-frontend,calendar-domain --all
+                - npm run all:test
               caches:
                 - node
