@@ -49,7 +49,7 @@ Below is a list of tasks which need to be completed. You are allowed to use any 
 
 #### 7. (Optional) Restyle the event
 
-  Change the style of the event so it matches this design: https://t.ly/rgpqh. The font is Georgia and the colour palette is available here: https://colorhunt.co/palette/001f3f3a6d8c6a9ab0ead8b1
+  Change the style of the event so it matches this design: https://t.ly/YZhyY. The font is Georgia and the colour palette is available here: https://colorhunt.co/palette/001f3f3a6d8c6a9ab0ead8b1
 
 
 
@@ -67,7 +67,7 @@ There is a docker-compose file which start a MySQL database, backend and fronten
 ```
 docker buildx build --platform linux/arm64 . --tag nx-cli-local
 ```
-Note: Change `arm64` to `amd64` if you are not on MacOS.
+Note: Change `arm64` to `amd64` if you are not on MacOS (with Apple silicone).
 
 
 You can then start all the projects up using `docker compose up -d`.
