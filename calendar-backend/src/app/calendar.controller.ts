@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  Patch,
 } from '@nestjs/common';
 
 import { CalendarService } from './calendar.service';
@@ -23,6 +24,12 @@ export class CalendarController {
   async createEvent(@Body() payload: EventPayload) {
     const id = await this.calendarService.addEvent(payload);
     return { message: 'Event created', id };
+  }
+
+  @Patch('update-event/:id')
+  async updateEvent(@Param('id') id: number, @Body() payload: EventPayload) {
+    await this.calendarService.updateEvent(id, payload);
+    return { message: 'Event updated', id };
   }
 
   @Delete('delete-event/:id')

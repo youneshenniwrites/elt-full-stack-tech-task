@@ -26,6 +26,14 @@ export class CalendarService {
     return newEntity.id;
   }
 
+  async updateEvent(id: number, payload: EventPayload): Promise<void> {
+    await this.calendarEventRepository.updateEventById(id, {
+      name: payload.name,
+      start: payload.start ? new Date(payload.start) : undefined,
+      end: payload.end ? new Date(payload.end) : undefined,
+    });
+  }
+
   async deleteEvent(id: number) {
     await this.calendarEventRepository.deleteById(id);
   }

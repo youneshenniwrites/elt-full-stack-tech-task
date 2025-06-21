@@ -22,6 +22,13 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
     return newEntity;
   }
 
+  async updateEventById(
+    id: number,
+    updateData: Partial<CalendarEventEntity>,
+  ): Promise<void> {
+    await this.nativeUpdate({ id }, updateData);
+  }
+
   async deleteById(id: number): Promise<void> {
     await this.nativeDelete({ id });
   }
