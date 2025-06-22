@@ -58,7 +58,30 @@ export const CalendarView = ({
       console.error('Failed to update event', error);
     }
   };
-  const onEventResize = () => console.log('todo');
+  const onEventResize = async ({
+    event,
+    start,
+    end,
+  }: EventInteractionArgs<EltEvent>) => {
+    try {
+      await calendarService.updateEvent(
+        event.id,
+        event.title,
+        moment(start),
+        moment(end),
+      );
+
+      setLocalEvents((prevEvents) =>
+        prevEvents.map((ev) =>
+          ev.id === event.id
+            ? { ...ev, start: new Date(start), end: new Date(end) }
+            : ev,
+        ),
+      );
+    } catch (error) {
+      console.error('Failed to update event', error);
+    }
+  };
 
   return (
     <DnDCalendar
