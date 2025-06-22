@@ -46,6 +46,17 @@ export const useCalendar = () => {
     setEvents((events) => [...events, { ...event, id }]);
   };
 
+  const updateEvent = async (event: EltEvent) => {
+    await calendarService.updateEvent(
+      event.id,
+      event.title,
+      moment(event.start),
+      moment(event.end),
+    );
+
+    setEvents((events) => events.map((e) => (e.id === event.id ? event : e)));
+  };
+
   const viewToUnitOfTime = (view: View): unitOfTime.StartOf => {
     switch (view) {
       case 'day':
@@ -65,6 +76,7 @@ export const useCalendar = () => {
     setShowIds,
     onNavigate,
     addEvent,
+    updateEvent,
     selectedEvent,
     setSelectedEvent,
   };

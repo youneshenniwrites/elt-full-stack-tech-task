@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { CalendarToolbar } from './calendar-toolbar';
 import { EltEvent } from '../../../../common/types';
 import { Dispatch } from 'react';
@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event';
 
 describe('CalendarToolbarComponent', () => {
   let addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
+  let updateEvent: (event: EltEvent) => Promise<void>;
   let setShowIds: Dispatch<boolean>;
   const mockEvent: EltEvent = {
     id: 100,
@@ -17,6 +18,7 @@ describe('CalendarToolbarComponent', () => {
 
   beforeEach(() => {
     addEvent = jest.fn();
+    updateEvent = jest.fn();
     setShowIds = jest.fn();
   });
 
@@ -24,6 +26,7 @@ describe('CalendarToolbarComponent', () => {
     const { container } = render(
       <CalendarToolbar
         addEvent={addEvent}
+        updateEvent={updateEvent}
         showIds={false}
         setShowIds={setShowIds}
       />,
@@ -37,6 +40,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -52,6 +56,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -72,6 +77,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -96,7 +102,7 @@ describe('CalendarToolbarComponent', () => {
 
       setTimeout(() => {
         expect(screen.queryByText(/create new event/i)).not.toBeInTheDocument();
-      }, 25);
+      }, 0);
     });
   });
 
@@ -105,6 +111,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -118,6 +125,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
           selectedEvent={mockEvent}
@@ -127,6 +135,57 @@ describe('CalendarToolbarComponent', () => {
       const btn = screen.getByTestId('edit-event-btn');
       expect(btn).toBeEnabled();
     });
+
+    it('should open the modal when Edit event button is clicked', () => {
+      render(
+        <CalendarToolbar
+          addEvent={addEvent}
+          updateEvent={updateEvent}
+          showIds={false}
+          setShowIds={setShowIds}
+          selectedEvent={mockEvent}
+        />,
+      );
+
+      const btn = screen.getByTestId('edit-event-btn');
+      userEvent.click(btn);
+
+      expect(screen.getByText('Edit Event')).toBeInTheDocument();
+      expect(screen.getByText(/update/i)).toBeInTheDocument();
+      expect(screen.getByText(/cancel/i)).toBeInTheDocument();
+    });
+
+    it('should call updateEvent and close modal after submitting edited event', async () => {
+      render(
+        <CalendarToolbar
+          addEvent={addEvent}
+          updateEvent={updateEvent}
+          showIds={false}
+          setShowIds={setShowIds}
+          selectedEvent={mockEvent}
+        />,
+      );
+
+      userEvent.click(screen.getByTestId('edit-event-btn'));
+
+      const titleInput = screen.getByLabelText(/title/i);
+      userEvent.clear(titleInput);
+      userEvent.type(titleInput, 'Updated Event Title');
+
+      const submitBtn = screen.getByRole('button', { name: /save|update/i });
+      userEvent.click(submitBtn);
+
+      expect(updateEvent).toHaveBeenCalledWith({
+        id: mockEvent.id,
+        title: 'Updated Event Title',
+        start: expect.any(Date),
+        end: expect.any(Date),
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText('Edit Event')).not.toBeInTheDocument();
+      });
+    });
   });
 
   describe('Show ids checkbox', () => {
@@ -134,6 +193,7 @@ describe('CalendarToolbarComponent', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
+          updateEvent={updateEvent}
           showIds={false}
           setShowIds={setShowIds}
         />,

@@ -1,23 +1,38 @@
-import { useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import moment from 'moment';
 import { ModalStyle } from './styles/event-form-modal';
+import { EltEvent } from '../../../../common/types';
 
 interface EventFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (event: { title: string; start: Date; end: Date }) => void;
+  onCreate: (event: Omit<EltEvent, 'id'>) => void;
+  onEdit?: (event: Omit<EltEvent, 'id'>) => void;
+  event?: EltEvent | undefined;
 }
 
 export const EventFormModal = ({
   isOpen,
   onClose,
   onCreate,
+  onEdit,
+  event,
 }: EventFormModalProps) => {
-  const [title, setTitle] = useState('');
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [title, setTitle] = useState(event?.title || '');
+  const [start, setStart] = useState(
+    event ? moment(event.start).format('YYYY-MM-DDTHH:mm') : '',
+  );
+  const [end, setEnd] = useState(
+    event ? moment(event.end).format('YYYY-MM-DDTHH:mm') : '',
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    setTitle(event?.title || '');
+    setStart(event ? moment(event.start).format('YYYY-MM-DDTHH:mm') : '');
+    setEnd(event ? moment(event.end).format('YYYY-MM-DDTHH:mm') : '');
+  }, [event]);
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (!title || !start || !end || moment(start).isAfter(moment(end))) {
@@ -25,11 +40,17 @@ export const EventFormModal = ({
       return;
     }
 
-    onCreate({
+    const eventPayload = {
       title,
       start: new Date(start),
       end: new Date(end),
-    });
+    };
+
+    if (onEdit) {
+      onEdit(eventPayload);
+    } else {
+      onCreate(eventPayload);
+    }
 
     setTitle('');
     setStart('');
@@ -41,7 +62,7 @@ export const EventFormModal = ({
   return (
     <div css={ModalStyle}>
       <div>
-        <h2>Create New Event</h2>
+        <h2>{event ? 'Edit Event' : 'Create New Event'}</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Title
@@ -71,7 +92,7 @@ export const EventFormModal = ({
             />
           </label>
           <div>
-            <button type="submit">Create</button>
+            <button type="submit">{event ? 'Update' : 'Create'}</button>
             <button type="button" onClick={onClose}>
               Cancel
             </button>

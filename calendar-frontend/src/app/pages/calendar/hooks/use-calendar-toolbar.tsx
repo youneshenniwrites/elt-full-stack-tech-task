@@ -3,21 +3,44 @@ import { EltEvent } from '../../../common/types';
 
 export const useCalendarToolbar = (
   addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>,
+  updateEvent: (event: EltEvent) => Promise<void>,
 ) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<EltEvent | null>(null);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModalForCreate = () => {
+    setEditingEvent(null);
+    setIsModalOpen(true);
+  };
+
+  const openModalForEdit = (event: EltEvent) => {
+    setEditingEvent(event);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingEvent(null);
+  };
 
   const handleCreate = async (event: Omit<EltEvent, 'id'>) => {
     await addEvent(event);
     closeModal();
   };
 
+  const handleEdit = async (event: Omit<EltEvent, 'id'>) => {
+    if (!editingEvent) return;
+    await updateEvent({ ...event, id: editingEvent.id });
+    closeModal();
+  };
+
   return {
     isModalOpen,
-    openModal,
+    editingEvent,
+    openModalForCreate,
+    openModalForEdit,
     closeModal,
     handleCreate,
+    handleEdit,
   };
 };

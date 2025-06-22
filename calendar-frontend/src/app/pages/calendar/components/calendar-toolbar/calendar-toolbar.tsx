@@ -6,6 +6,7 @@ import { EventFormModal } from '../event-form-modal/event-form-modal';
 
 interface ICalendarToolbarProps {
   addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
+  updateEvent: (event: EltEvent) => Promise<void>;
   showIds: boolean;
   setShowIds: Dispatch<boolean>;
   selectedEvent?: EltEvent;
@@ -16,17 +17,26 @@ export const CalendarToolbar = ({
   showIds,
   setShowIds,
   selectedEvent,
+  updateEvent,
 }: ICalendarToolbarProps) => {
-  const { isModalOpen, openModal, closeModal, handleCreate } =
-    useCalendarToolbar(addEvent);
+  const {
+    isModalOpen,
+    editingEvent,
+    openModalForCreate,
+    openModalForEdit,
+    closeModal,
+    handleCreate,
+    handleEdit,
+  } = useCalendarToolbar(addEvent, updateEvent);
 
   const editEvent = (event?: EltEvent) => {
-    console.log('todo');
+    if (!event) return;
+    openModalForEdit(event);
   };
 
   return (
     <div css={ToolbarStyle}>
-      <button data-testid="add-event-btn" onClick={openModal}>
+      <button data-testid="add-event-btn" onClick={openModalForCreate}>
         Add event
       </button>
       <button
@@ -49,6 +59,8 @@ export const CalendarToolbar = ({
         isOpen={isModalOpen}
         onClose={closeModal}
         onCreate={handleCreate}
+        onEdit={handleEdit}
+        event={editingEvent || undefined}
       />
     </div>
   );
