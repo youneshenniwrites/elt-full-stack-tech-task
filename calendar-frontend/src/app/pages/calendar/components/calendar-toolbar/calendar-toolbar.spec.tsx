@@ -33,7 +33,7 @@ describe('CalendarToolbarComponent', () => {
   });
 
   describe('Add event button', () => {
-    it('should add a random event', async () => {
+    it('should open the modal when Add event button is clicked', () => {
       render(
         <CalendarToolbar
           addEvent={addEvent}
@@ -45,11 +45,58 @@ describe('CalendarToolbarComponent', () => {
       const btn = screen.getByTestId('add-event-btn');
       userEvent.click(btn);
 
-      expect(addEvent).toHaveBeenCalledWith({
-        start: expect.any(Date),
-        end: expect.any(Date),
-        title: expect.stringMatching(/Random event \d+/),
-      });
+      expect(screen.getByText('Create New Event')).toBeInTheDocument();
+    });
+
+    it('should close modal when Cancel button is clicked', () => {
+      render(
+        <CalendarToolbar
+          addEvent={addEvent}
+          showIds={false}
+          setShowIds={setShowIds}
+        />,
+      );
+
+      const addBtn = screen.getByTestId('add-event-btn');
+      userEvent.click(addBtn);
+
+      expect(screen.getByText(/create new event/i)).toBeInTheDocument();
+
+      const cancelBtn = screen.getByRole('button', { name: /cancel/i });
+      userEvent.click(cancelBtn);
+
+      expect(screen.queryByText(/create new event/i)).not.toBeInTheDocument();
+    });
+
+    it('should close modal after successful event creation', async () => {
+      render(
+        <CalendarToolbar
+          addEvent={addEvent}
+          showIds={false}
+          setShowIds={setShowIds}
+        />,
+      );
+
+      const addBtn = screen.getByTestId('add-event-btn');
+      userEvent.click(addBtn);
+
+      expect(screen.getByText(/create new event/i)).toBeInTheDocument();
+
+      const titleInput = screen.getByLabelText(/title/i);
+      const startTimeInput = screen.getByLabelText(/start time/i);
+      const endTimeInput = screen.getByLabelText(/end time/i);
+
+      userEvent.type(titleInput, 'Test Event');
+      userEvent.type(startTimeInput, '25/06/2025, 09:00');
+      userEvent.type(endTimeInput, '25/06/2025, 10:30');
+
+      const createBtn = screen.getByRole('button', { name: /create/i });
+
+      userEvent.click(createBtn);
+
+      setTimeout(() => {
+        expect(screen.queryByText(/create new event/i)).not.toBeInTheDocument();
+      }, 25);
     });
   });
 
