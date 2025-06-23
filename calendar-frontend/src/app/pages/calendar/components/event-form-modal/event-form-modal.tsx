@@ -46,7 +46,10 @@ export const EventFormModal = ({
       end: new Date(end),
     };
 
-    if (onEdit) {
+    // Edit mode is true if there is an event and an onEdit handler function
+    const isEditMode = !!event && typeof onEdit === 'function';
+
+    if (isEditMode) {
       onEdit(eventPayload);
     } else {
       onCreate(eventPayload);
