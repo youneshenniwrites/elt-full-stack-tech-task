@@ -1,5 +1,5 @@
 import { CalendarEventEntity } from '../entity/calendar-event.entity';
-import { EntityRepository } from '@mikro-orm/mysql';
+import { EntityRepository, FilterQuery } from '@mikro-orm/mysql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -31,5 +31,24 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
 
   async deleteById(id: number): Promise<void> {
     await this.nativeDelete({ id });
+  }
+
+  async hasConflict(
+    start: Date,
+    end: Date,
+    currentEventId?: number,
+  ): Promise<boolean> {
+    const conditions: FilterQuery<CalendarEventEntity> = {
+      start: { $lt: end },
+      end: { $gt: start },
+    };
+
+    // Only check for conflicts with other events, not the one currently being edited
+    if (currentEventId !== undefined) {
+      conditions.id = { $ne: currentEventId };
+    }
+
+    const conflictingEvents = await this.find(conditions);
+    return conflictingEvents.length > 0;
   }
 }

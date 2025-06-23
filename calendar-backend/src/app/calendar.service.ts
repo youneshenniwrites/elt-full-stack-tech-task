@@ -17,20 +17,47 @@ export class CalendarService {
   }
 
   async addEvent(payload: EventPayload) {
+    const start = new Date(payload.start);
+    const end = new Date(payload.end);
+
+    const hasConflict = await this.calendarEventRepository.hasConflict(
+      start,
+      end,
+    );
+    if (hasConflict) {
+      throw new BadRequestException(
+        'Event conflicts with another existing event.',
+      );
+    }
+
     const newEntity = await this.calendarEventRepository.createNewEvent(
       payload.name,
-      new Date(payload.start),
-      new Date(payload.end),
+      start,
+      end,
     );
 
     return newEntity.id;
   }
 
   async updateEvent(id: number, payload: EventPayload): Promise<void> {
+    const start = new Date(payload.start);
+    const end = new Date(payload.end);
+
+    const hasConflict = await this.calendarEventRepository.hasConflict(
+      start,
+      end,
+      id,
+    );
+    if (hasConflict) {
+      throw new BadRequestException(
+        'Event conflicts with another existing event.',
+      );
+    }
+
     await this.calendarEventRepository.updateEventById(id, {
       name: payload.name,
-      start: payload.start ? new Date(payload.start) : undefined,
-      end: payload.end ? new Date(payload.end) : undefined,
+      start,
+      end,
     });
   }
 

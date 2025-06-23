@@ -24,14 +24,22 @@ export const useCalendarToolbar = (
   };
 
   const handleCreate = async (event: Omit<EltEvent, 'id'>) => {
-    await addEvent(event);
-    closeModal();
+    try {
+      await addEvent(event);
+      closeModal();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to create event.');
+    }
   };
 
   const handleEdit = async (event: Omit<EltEvent, 'id'>) => {
     if (!editingEvent) return;
-    await updateEvent({ ...event, id: editingEvent.id });
-    closeModal();
+    try {
+      await updateEvent({ ...event, id: editingEvent.id });
+      closeModal();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to update event.');
+    }
   };
 
   return {
