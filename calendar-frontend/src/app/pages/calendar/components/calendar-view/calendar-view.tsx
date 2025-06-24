@@ -9,6 +9,7 @@ import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
 import { useCalendarView } from '../../hooks/use-calendar-view';
 import { CalendarService } from '../../../../service/calendar.service';
+import { useCalendarContext } from '../../../../context/calendar.context';
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
@@ -16,16 +17,10 @@ const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
 interface ICalendarViewProps {
   onNavigate: (date: Date, view: View) => void;
   events: EltEvent[];
-  showIds: boolean;
-  setSelectedEvent: (event: EltEvent) => void;
 }
 
-export const CalendarView = ({
-  onNavigate,
-  events,
-  showIds,
-  setSelectedEvent,
-}: ICalendarViewProps) => {
+export const CalendarView = ({ onNavigate, events }: ICalendarViewProps) => {
+  const { showIds, setSelectedEvent } = useCalendarContext();
   const { components } = useCalendarView(showIds);
   const [localEvents, setLocalEvents] = useState<EltEvent[]>(events);
   const calendarService = useMemo(() => new CalendarService(), []);

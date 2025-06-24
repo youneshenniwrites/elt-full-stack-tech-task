@@ -1,24 +1,20 @@
 import { EltEvent } from '../../../../common/types';
-import { Dispatch } from 'react';
 import { useCalendarToolbar } from '../../hooks/use-calendar-toolbar';
 import { ToolbarStyle } from './styles/calendar-toolbar-style';
 import { EventFormModal } from '../event-form-modal/event-form-modal';
+import { useCalendarContext } from '../../../../context/calendar.context';
 
 interface ICalendarToolbarProps {
   addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   updateEvent: (event: EltEvent) => Promise<void>;
-  showIds: boolean;
-  setShowIds: Dispatch<boolean>;
-  selectedEvent?: EltEvent;
 }
 
 export const CalendarToolbar = ({
   addEvent,
-  showIds,
-  setShowIds,
-  selectedEvent,
   updateEvent,
 }: ICalendarToolbarProps) => {
+  const { showIds, setShowIds, selectedEvent } = useCalendarContext();
+
   const {
     isModalOpen,
     editingEvent,
