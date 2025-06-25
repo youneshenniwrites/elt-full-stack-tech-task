@@ -38,17 +38,19 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
     end: Date,
     currentEventId?: number,
   ): Promise<boolean> {
-    const conditions: FilterQuery<CalendarEventEntity> = {
+    const overlapConditions: FilterQuery<CalendarEventEntity> = {
       start: { $lt: end },
       end: { $gt: start },
     };
 
     // Only check for conflicts with other events, not the one currently being edited
     if (currentEventId !== undefined) {
-      conditions.id = { $ne: currentEventId };
+      overlapConditions.id = { $ne: currentEventId };
     }
 
-    const conflictingEvents = await this.find(conditions);
-    return conflictingEvents.length > 0;
+    // Short-circuit on the first match
+    const overlappingEvent = await this.findOne(overlapConditions);
+
+    return !!overlappingEvent;
   }
 }
