@@ -1,5 +1,5 @@
 import { CalendarEventEntity } from '../entity/calendar-event.entity';
-import { EntityRepository } from '@mikro-orm/mysql';
+import { EntityRepository, FilterQuery } from '@mikro-orm/mysql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -22,7 +22,35 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
     return newEntity;
   }
 
+  async updateEventById(
+    id: number,
+    updateData: Partial<CalendarEventEntity>,
+  ): Promise<void> {
+    await this.nativeUpdate({ id }, updateData);
+  }
+
   async deleteById(id: number): Promise<void> {
     await this.nativeDelete({ id });
+  }
+
+  async hasConflict(
+    start: Date,
+    end: Date,
+    currentEventId?: number,
+  ): Promise<boolean> {
+    const overlapConditions: FilterQuery<CalendarEventEntity> = {
+      start: { $lt: end },
+      end: { $gt: start },
+    };
+
+    // Only check for conflicts with other events, not the one currently being edited
+    if (currentEventId !== undefined) {
+      overlapConditions.id = { $ne: currentEventId };
+    }
+
+    // Short-circuit on the first match
+    const overlappingEvent = await this.findOne(overlapConditions);
+
+    return !!overlappingEvent;
   }
 }

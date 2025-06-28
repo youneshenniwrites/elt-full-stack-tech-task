@@ -3,10 +3,10 @@ import { CalendarView } from './calendar-view';
 import { View } from 'react-big-calendar';
 import { EltEvent } from '../../../../common/types';
 import '@testing-library/jest-dom';
+import { CalendarProvider } from '../../../../context/calendar.context';
 
 describe('CalendarView', () => {
   let onNavigate: (date: Date, view: View) => void;
-  let setSelectedEvent: (event: EltEvent) => void;
   const mockEvent: EltEvent = {
     id: 100,
     title: 'Mock event',
@@ -16,7 +16,6 @@ describe('CalendarView', () => {
 
   beforeEach(() => {
     onNavigate = jest.fn();
-    setSelectedEvent = jest.fn();
     jest.useFakeTimers().setSystemTime(new Date('2024-10-11T10:30:00Z'));
   });
 
@@ -24,28 +23,21 @@ describe('CalendarView', () => {
     jest.useRealTimers();
   });
 
-  it('should render an empty calendar', () => {
-    const { container } = render(
-      <CalendarView
-        onNavigate={onNavigate}
-        events={[]}
-        showIds={false}
-        setSelectedEvent={setSelectedEvent}
-      />,
+  const renderWithProvider = (events: EltEvent[], initialShowIds = false) =>
+    render(
+      <CalendarProvider initialShowIds={initialShowIds}>
+        <CalendarView onNavigate={onNavigate} events={events} />
+      </CalendarProvider>,
     );
+
+  it('should render an empty calendar', () => {
+    const { container } = renderWithProvider([]);
 
     expect(container).toMatchSnapshot();
   });
 
   it('should render a calendar with an event', () => {
-    const { container } = render(
-      <CalendarView
-        onNavigate={onNavigate}
-        events={[mockEvent]}
-        showIds={false}
-        setSelectedEvent={setSelectedEvent}
-      />,
-    );
+    const { container } = renderWithProvider([mockEvent]);
 
     expect(container).toMatchSnapshot();
 
@@ -58,14 +50,7 @@ describe('CalendarView', () => {
   });
 
   it('should show event ids if flag is set', () => {
-    render(
-      <CalendarView
-        onNavigate={onNavigate}
-        events={[mockEvent]}
-        showIds={true}
-        setSelectedEvent={setSelectedEvent}
-      />,
-    );
+    renderWithProvider([mockEvent], true);
 
     const eventLabel = screen.getByText('Mock event');
     const event = eventLabel.closest('.rbc-event') as HTMLElement;

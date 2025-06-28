@@ -1,36 +1,88 @@
+import { useEffect, useState, useMemo } from 'react';
 import { Calendar, momentLocalizer, View } from 'react-big-calendar';
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import withDragAndDrop, {
+  EventInteractionArgs,
+} from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from 'moment';
 import './styles/calendar.scss';
 import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
 import { useCalendarView } from '../../hooks/use-calendar-view';
+import { CalendarService } from '../../../../service/calendar.service';
+import { useCalendarContext } from '../../../../context/calendar.context';
+
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
 
 interface ICalendarViewProps {
   onNavigate: (date: Date, view: View) => void;
   events: EltEvent[];
-  showIds: boolean;
-  setSelectedEvent: (event: EltEvent) => void;
 }
 
-export const CalendarView = ({
-  onNavigate,
-  events,
-  showIds,
-  setSelectedEvent,
-}: ICalendarViewProps) => {
+export const CalendarView = ({ onNavigate, events }: ICalendarViewProps) => {
+  const { showIds, setSelectedEvent } = useCalendarContext();
   const { components } = useCalendarView(showIds);
+  const [localEvents, setLocalEvents] = useState<EltEvent[]>(events);
+  const calendarService = useMemo(() => new CalendarService(), []);
 
-  const onEventDrop = () => console.log('todo');
-  const onEventResize = () => console.log('todo');
+  useEffect(() => {
+    setLocalEvents(events);
+  }, [events]);
+
+  const onEventDrop = async ({
+    event,
+    start,
+    end,
+  }: EventInteractionArgs<EltEvent>) => {
+    setLocalEvents((prevEvents) =>
+      prevEvents.map((ev) =>
+        ev.id === event.id
+          ? { ...ev, start: new Date(start), end: new Date(end) }
+          : ev,
+      ),
+    );
+
+    try {
+      await calendarService.updateEvent(
+        event.id,
+        event.title,
+        moment(start),
+        moment(end),
+      );
+    } catch (error) {
+      console.error('Failed to update event', error);
+    }
+  };
+  const onEventResize = async ({
+    event,
+    start,
+    end,
+  }: EventInteractionArgs<EltEvent>) => {
+    try {
+      await calendarService.updateEvent(
+        event.id,
+        event.title,
+        moment(start),
+        moment(end),
+      );
+
+      setLocalEvents((prevEvents) =>
+        prevEvents.map((ev) =>
+          ev.id === event.id
+            ? { ...ev, start: new Date(start), end: new Date(end) }
+            : ev,
+        ),
+      );
+    } catch (error) {
+      console.error('Failed to update event', error);
+    }
+  };
 
   return (
     <DnDCalendar
       components={components}
       defaultDate={moment().toDate()}
-      events={events}
+      events={localEvents}
       onNavigate={onNavigate}
       defaultView={'week'}
       onSelectEvent={setSelectedEvent}

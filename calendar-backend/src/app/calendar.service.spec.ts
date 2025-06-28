@@ -28,6 +28,10 @@ describe('CalendarService', () => {
 
   describe('createEvent', () => {
     it('should create a new event', async () => {
+      jest
+        .spyOn(calendarEventRepository, 'hasConflict')
+        .mockResolvedValue(false);
+
       const createNewEvent = jest
         .spyOn(calendarEventRepository, 'createNewEvent')
         .mockResolvedValue(mockCalendarEventEntity);

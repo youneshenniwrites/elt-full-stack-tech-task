@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
-
 import { Route, Routes } from 'react-router-dom';
 import { CalendarPage } from './pages/calendar/calendar.page';
-
+import { CalendarProvider } from './context/calendar.context';
 const StyledApp = styled.div`
   // Your style here
 `;
@@ -10,9 +9,11 @@ const StyledApp = styled.div`
 export function App() {
   return (
     <StyledApp>
-      <Routes>
-        <Route path="/" element={<CalendarPage />} />
-      </Routes>
+      <CalendarProvider>
+        <Routes>
+          <Route path="/" element={<CalendarPage />} />
+        </Routes>
+      </CalendarProvider>
     </StyledApp>
   );
 }

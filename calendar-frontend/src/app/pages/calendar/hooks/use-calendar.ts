@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import moment, { unitOfTime, Moment } from 'moment/moment';
 import { View } from 'react-big-calendar';
 import { EltEvent } from '../../../common/types';
@@ -36,14 +37,39 @@ export const useCalendar = () => {
   };
 
   const addEvent = async (event: Omit<EltEvent, 'id'>) => {
-    const {
-      data: { id },
-    } = await calendarService.createEvent(
-      event.title,
-      moment(event.start),
-      moment(event.end),
-    );
-    setEvents((events) => [...events, { ...event, id }]);
+    try {
+      const {
+        data: { id },
+      } = await calendarService.createEvent(
+        event.title,
+        moment(event.start),
+        moment(event.end),
+      );
+      setEvents((events) => [...events, { ...event, id }]);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
+        throw new Error(err.response.data?.message || 'Validation failed.');
+      }
+      throw new Error('Failed to create event.');
+    }
+  };
+
+  const updateEvent = async (event: EltEvent) => {
+    try {
+      await calendarService.updateEvent(
+        event.id,
+        event.title,
+        moment(event.start),
+        moment(event.end),
+      );
+
+      setEvents((events) => events.map((e) => (e.id === event.id ? event : e)));
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
+        throw new Error(err.response.data?.message || 'Validation failed.');
+      }
+      throw new Error('Failed to update event.');
+    }
   };
 
   const viewToUnitOfTime = (view: View): unitOfTime.StartOf => {
@@ -65,6 +91,7 @@ export const useCalendar = () => {
     setShowIds,
     onNavigate,
     addEvent,
+    updateEvent,
     selectedEvent,
     setSelectedEvent,
   };
